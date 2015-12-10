@@ -1,0 +1,99 @@
+#INPUT = File.read "input.txt"
+
+class Runner
+  def self.run(*args)
+    new(*args).run
+  end
+
+  attr_reader :input
+  def initialize(_input)
+    @input = _input
+  end
+
+  def run
+    puts "The solution to part one:"
+    puts part_one
+    puts
+    puts "The solution to part two:"
+    puts part_two
+    puts
+  end
+
+  private
+
+  def part_one
+  end
+
+  def part_two
+  end
+end
+
+class Brüt
+
+  INFINITY = 1/0.0
+
+  def initialize(input)
+    @routes = {}
+    @memo = {}
+    input.each_line {|line| add_route(line) }
+  end
+
+  def distance(from, to)
+    @routes[from][to]
+  end
+
+  def nodes
+    @routes.keys
+  end
+
+  def all_paths_naieve
+    paths = nodes.permutation
+
+    shortest_distance = INFINITY
+
+    paths.times do
+      path = paths.next
+      dist = interruptable_path_distance(path, shortest_distance)
+      if dist
+        shortest_distance = dist
+      end
+    end
+
+    shortest_distance
+  end
+
+  def path_distance(stops)
+    interruptable_path_distance(stops, INFINITY)
+  end
+
+  def interruptable_path_distance(stops, threshold)
+    dist = 0
+    (stops.length-1).times do |i|
+      from = stops[i]
+      to   = stops[i+1]
+
+      dist += distance(from, to)
+      return nil if dist > threshold
+    end
+
+    dist
+  end
+
+
+  private
+
+  def add_route(line)
+    data = line.split " "
+
+    from = data[0]
+    to   = data[2]
+    dist = data[4]
+
+    @routes[ from ] ||= {}
+    @routes[ to   ] ||= {}
+
+    @routes[ from ][ to   ] = dist
+    @routes[ to   ][ from ] = dist
+  end
+
+end
